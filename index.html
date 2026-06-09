@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Shopping Study</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; background: #f4f4f2; color: #1a1a1a; line-height: 1.6; }
+  .screen { display: none; max-width: 760px; margin: 0 auto; padding: 40px 32px 80px;}
+  .screen.active { display: block;}
+  #screen-consent h1{margin-left:30px;}
+  h1 { font-size: 24px; margin-bottom: 18px; }
+  h2 { font-size: 18px; margin: 24px 0 12px; }
+  p { margin-bottom: 14px; font-size: 15px; color: #333; }
+  .card { background: #fff; border-radius: 12px; padding: 28px 30px; box-shadow: 0 2px 14px rgba(0,0,0,0.05); margin-bottom: 20px; }
+  .btn { display: inline-block; padding: 13px 28px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .btn:disabled { background: #bbb; cursor: not-allowed; }
+  .btn-secondary { background: #fff; color: #1a1a1a; border: 1.5px solid #ccc; }
+  .btn-back { background: #fff; color: #555; border: 1.5px solid #ddd; }
+  .btn-back:hover { border-color: #888; color: #1a1a1a; }
+  .btn-row { display: flex; gap: 14px; margin-top: 20px; }
+  .err { color: #c0392b; font-size: 14px; margin-top: 10px; display: none; }
+  label.opt { display: block; padding: 11px 14px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 15px; }
+  label.opt:hover { border-color: #888; }
+  label.opt input { margin-right: 10px; }
+
+  .likert {position: inherit; margin-bottom: 26px; }
+  .likert-q { font-size: 15px; margin-bottom: 10px; }
+  .likert-scale { display: flex; gap: 4px; }
+  .likert-scale label { flex: 1; text-align: center; font-size: 12px; color: #555; cursor: pointer; padding: 8px 2px; border: 1px solid #e0e0e0; border-radius: 6px; }
+  .likert-scale label:hover { background: #f0f0f0; }
+  .likert-scale input { display: block; margin: 0 auto 4px; }
+  .scale-anchors { display: flex; justify-content: space-between; font-size: 11px; color: #999; margin-bottom: 6px; }
+  .text-input { width: 100%; padding: 11px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
+  .progress { height: 4px; background: #e0e0e0; border-radius: 2px; margin-bottom: 30px; overflow: hidden; }
+  .progress-bar { height: 100%; background: #2e7d4f; width: 0%; transition: width 0.3s; }
+
+  #screen-product { max-width: 1100px; height: 1000px;}
+  .pp-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 30px; background: #fff; border-radius: 12px 12px 0 0; border-bottom: 1px solid #eee; }
+  .pp-logo { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+  .pp-nav { display: flex; gap: 24px; font-size: 14px; color: #555; }
+  .pp-body { background: #fff; border-radius: 0 0 12px 12px; padding: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 44px; }
+  .pp-gallery img { width: 100%; border-radius: 10px; display: block; }
+  .thumb-row { display: flex; gap: 10px; margin-top: 12px;}
+  .thumb-row div { width: 70px; height: 70px; border-radius: 6px; background: #f7f7f7; border: 1px solid #e5e5e5; }
+  .pp-name { font-size: 28px; font-weight: 600; margin-bottom: 4px; }
+  .pp-sub { color: #777; font-size: 14px; margin-bottom: 16px; }
+  .pp-price { font-size: 25px; font-weight: 600; margin-bottom: 22px; }
+  .pp-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 8px; }
+  .pp-colors { display: flex; gap: 10px; margin-bottom: 22px; }
+  .pp-dot { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ddd; cursor: pointer; }
+  .thumb-row { display: flex; gap: 10px; margin-top: 14px; }
+.pp-thumb {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;           /* fills the square, may crop edges */
+  object-position: center; /* centers the crop */
+  border-radius: 8px;
+  border: 2px solid #e5e5e5;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  background-color: #f7f7f7;
+  display: block;       
+  box-sizing: border-box;       /* removes extra inline spacing */
+}
+.thumb-wrapper {
+  width: 70px;
+  height: 70px;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: border-color 0.15s;
+}
+
+.thumb-wrapper.active {
+  border-color: #1a1a1a;
+  box-shadow: inset 0 0 0 2px #1a1a1a;
+}
+
+.thumb-wrapper img {
+  max-width: 80%;      /* image takes only 80% of the box */
+  max-height: 80%;
+  object-fit: contain;
+  display: block;
+}
+.pp-thumb.active {
+  border-color: #1a1a1a;
+  box-shadow: inset 0 0 0 2px #1a1a1a; /* inner shadow → NO external lines */
+}
+  .pp-thumb:hover:not(.active) { border-color: #888; }
+  .pp-desc { font-size: 14px; color: #444; margin-bottom: 22px; }
+
+  #ppMainImg {
+  width: 100%;
+  aspect-ratio: 1 / 1;          /* keeps a square container */
+  object-fit: contain;          /* fits the whole backpack without cropping */
+  object-position: 50% 10%; /* centers the image horizontally & vertically */
+  background-color: #f5f5f3;    /* light background for empty areas */
+  border-radius: 10px;
+  }
+
+  .sustain-group{margin-bottom:22px; position: relative;}
+  .sustain-reveal {max-height: 0; overflow: hidden; opacity: 0; background: #f0f7f1; border-radius: 10px; transition: max-height .45s ease, opacity .3s ease, margin-top .3s ease, padding .3s ease; padding: 0 22px; border: 1px solid transparent; margin-bottom: 22px; }
+  .sustain-reveal.open { max-height: 400px; opacity: 1; padding: 20px 22px; border: 1px solid #cfe8d4; margin-top: 10px; }
+.sustain-trigger {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: linear-gradient(135deg, #e6f4ec 0%, #cfebd8 100%);
+  border: 2px solid #5aad74; border-radius: 12px;
+  padding: 16px 20px; cursor: pointer;
+  font-size: 15px; font-weight: 700; color: #1a5c35;
+  margin-bottom: 6px;
+  animation: sustain-pulse 2.2s ease-in-out infinite;
+  transition: background 0.2s, box-shadow 0.2s, animation 0.2s;
+}
+.sustain-trigger:hover {
+  background: linear-gradient(135deg, #cfebd8 0%, #b2dfc2 100%);
+  box-shadow: 0 4px 18px rgba(46,125,79,0.28);
+  animation: none;
+}
+.sustain-trigger.hidden { display: none; }
+.sustain-trigger .hint {
+  margin-left: auto;
+  font-size: 13px; font-weight: 600; color: #fff;
+  background: #2e7d4f; border-radius: 20px;
+  padding: 4px 13px; white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+@keyframes sustain-pulse {
+  0%   { box-shadow: 0 0 0 0   rgba(46,125,79,0.45); }
+  55%  { box-shadow: 0 0 0 11px rgba(46,125,79,0);   }
+  100% { box-shadow: 0 0 0 0   rgba(46,125,79,0.45); }
+}
+
+
+  .sustain-text { font-size: 14px; color: #2f5d42; margin-bottom: 14px; }
+  .sustain-stat { display: flex; gap: 24px; }
+  .stat-num { font-size: 21px; font-weight: 700; color: #2e7d4f; }
+  .stat-label { font-size: 11px; color: #5a7a64; text-transform: uppercase; }
+  .cert-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .cert { font-size: 11px; background: #fff; border: 1px solid #cfe8d4; border-radius: 20px; padding: 4px 11px; color: #2e7d4f; font-weight: 600; }
+  .pp-cart-btn { width: 100%; padding: 15px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+  .pp-skip-btn { margin-top: 6px;width: 100%;padding: 13px;  background: #fff; color: #777; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; cursor: pointer; }
+  .dwell-note { font-size: 12px; color: #aaa; text-align: center; margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<div class="screen active" id="screen-consent">
+  <h1>Research Study: Online Shopping Experience</h1>
+  <div class="card">
+    <p>Thank you for your interest. In this short study, you will view a product page from an online store and answer some questions about your experience. The study takes about 7–10 minutes.</p>
+    <p>Your participation is voluntary and anonymous. We record only your responses and basic browsing behavior on the product page (e.g., how long you viewed it). We do not collect any personally identifying information. You may withdraw at any time by closing the window.</p>
+    <p>This study must be completed on a <strong>desktop or laptop computer</strong> using a mouse or trackpad.</p>
+    <label class="opt" for="consent_yes"><input type="radio" name="consent" id="consent_yes" value="yes"> I am using a desktop/laptop and I agree to participate.</label>
+    <label class="opt" for="consent_no"><input type="radio" name="consent" id="consent_no" value="no"> I do not wish to participate.</label>
+    <div class="err" id="err-consent">Please select an option to continue.</div>
+    <div class="btn-row"><button class="btn" onclick="handleConsent()">Continue</button></div>
+  </div>
+</div>
+
+<div class="screen" id="screen-instructions">
+  <div class="card">
+    <h1>Instructions</h1>
+    <p>On the next screen, you will view a product page from an online store.</p>
+    <p>Please <strong>browse the page as you naturally would when shopping online</strong>. Take your time to explore the product.</p>
+    <p>When you are finished exploring, you can either add the product to your cart or continue without adding it — both options let you proceed.</p>
+    <div class="btn-row"><button class="btn" onclick="startProduct()">View the product</button></div>
+  </div>
+</div>
+
+<div class="screen" id="screen-product">
+  <div class="pp-header">
+    <div class="pp-logo">TERRA</div>
+    <div class="pp-nav"><span>Shop</span><span>About</span><span>Journal</span><span>Cart (0)</span></div>
+  </div>
+  <div class="pp-body">
+    <div class="pp-gallery">
+      <img id="ppMainImg" src="images\1.jpg" alt="Daily Pack">
+      <div class="thumb-row" id="thumbRow">
+        <div class="thumb-wrapper active" data-color="black" onclick="changeMainImage(this)">
+          <img src="images/1.jpg" alt="Black">
+        </div>
+        <div class="thumb-wrapper" data-color="orange" onclick="changeMainImage(this)">
+          <img src="images/2.jpg" alt="Orange">
+        </div>
+        <div class="thumb-wrapper" data-color="pink" onclick="changeMainImage(this)">
+          <img src="images/3.jpg" alt="Pink">
+        </div>
+      </div>
+    </div>
+    <div class="pp-info">
+      <div class="pp-name">Daily Pack</div>
+      <div class="pp-sub">20L everyday backpack · commute, work &amp; travel</div>
+      <div class="pp-price">$120</div>
+      <div class="pp-label">Color</div>
+      <div class="pp-colors">
+        <div class="pp-dot" style="background:#242527;border-color:#ffffff;" onclick="selectColorByIndex(0)"></div>
+        <div class="pp-dot" style="background:#c6b6a7;"                       onclick="selectColorByIndex(1)"></div>
+        <div class="pp-dot" style="background:#284885;"                       onclick="selectColorByIndex(2)"></div>
+      </div>
+      <div class="pp-desc">The Daily Pack is a clean, versatile 20-liter backpack built for everyday use. A padded laptop sleeve (fits 16"), water-resistant zippers, and an ergonomic back panel make it ideal for commuting, work, and weekend travel.</div>
+
+      <div id="sustainHoverZone">
+        <div id="sustainGroup" class="sustain-group">
+          <div id="sustainTrigger" class="sustain-trigger">
+            <span>🌿</span><span>Sustainability &amp; Materials</span><span class="hint">👆 hover to reveal</span>
+          </div>
+          <div id="sustainReveal" class="sustain-reveal">
+            <div class="sustain-text">The main body is woven from 100% recycled ocean-bound plastic, and the lining uses recycled PET. Every pack is backed by our lifetime repair program — we fix it free instead of you replacing it.</div>
+              <div class="sustain-stat">
+                <div><div class="stat-num">18</div><div class="stat-label">Bottles recycled<br>per pack</div></div>
+                <div><div class="stat-num">100%</div><div class="stat-label">Carbon-neutral<br>shipping</div></div>
+                <div><div class="stat-num">Free</div><div class="stat-label">Lifetime<br>repairs</div></div>
+              </div>
+              <div class="cert-row">
+                <span class="cert">✓ bluesign® certified</span>
+                <span class="cert">✓ Global Recycled Standard</span>
+                <span class="cert">✓ Climate Neutral</span>
+              </div>
+            </div>
+          </div>
+        </div>
+              <button class="pp-cart-btn" id="cartBtn" disabled onclick="decide(true)">Add to Cart</button>
+              <button class="pp-skip-btn" id="skipBtn" disabled onclick="decide(false)" padding-top="16px">Continue without adding</button>
+              <div class="dwell-note" id="dwellNote">Please explore the product before continuing…</div>
+      </div>
+  </div>
+</div>
+
+
+<div class="screen" id="screen-recall">
+  <div class="progress"><div class="progress-bar" style="width:15%"></div></div>
+  <div class="card">
+    <h2>One quick question</h2>
+    <p>What is the main material of the backpack you viewed?</p>
+    <label class="opt"><input type="radio" name="recall" value="recycled"> 100% recycled ocean-bound plastic</label>
+    <label class="opt"><input type="radio" name="recall" value="leather"> Genuine leather</label>
+    <label class="opt"><input type="radio" name="recall" value="cotton"> Organic cotton canvas</label>
+    <label class="opt"><input type="radio" name="recall" value="dontknow"> I don't remember</label>
+    <div class="err" id="err-recall">Please select an option.</div>
+    <div class="btn-row">
+      <button class="btn" onclick="next('recall')">Continue</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-mediators">
+  <div class="progress"><div class="progress-bar" style="width:30%"></div></div>
+  <div class="card">
+    <h2>Your experience on the page</h2>
+    <p>Please indicate how much you agree with each statement.</p>
+    <div id="navItems"></div>
+    <div id="ownItems"></div>
+    <div class="err" id="err-mediators">Please answer all items.</div>
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goBack()">← Back</button>
+      <button class="btn" onclick="next('mediators')">Continue</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-dv">
+  <div class="progress"><div class="progress-bar" style="width:45%"></div></div>
+  <div class="card">
+    <h2>Your views about the product</h2>
+    <div id="dvItems"></div>
+    <h2>What is the most you would pay for this product?</h2>
+    <p>Please enter a value in US dollars.</p>
+    <input class="text-input" id="wtp" type="number" min="0" placeholder="$ amount">
+    <div class="err" id="err-dv">Please answer all items, including the price.</div>
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goBack()">← Back</button>
+      <button class="btn" onclick="next('dv')">Continue</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-controls">
+  <div class="progress"><div class="progress-bar" style="width:60%"></div></div>
+  <div class="card">
+    <h2>A few more questions</h2>
+    <div id="ctrlItems"></div>
+    <div class="err" id="err-controls">Please answer all items.</div>
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goBack()">← Back</button>
+      <button class="btn" onclick="next('controls')">Continue</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-mc">
+  <div class="progress"><div class="progress-bar" style="width:75%"></div></div>
+  <div class="card">
+    <h2>About the page you just viewed</h2>
+    <div id="mcItems"></div>
+    <div class="err" id="err-mc">Please answer all items.</div>
+    <button class="btn" onclick="next('mc')">Continue</button>    
+  </div>
+</div>
+
+<div class="screen" id="screen-demo">
+  <div class="progress"><div class="progress-bar" style="width:95%"></div></div>
+  <div class="card">
+    <h2>Finally, a little about you</h2>
+    <p>Age</p>
+    <input class="text-input" id="age" type="number" min="18" max="100" placeholder="Your age" style="margin-bottom:18px;">
+    <p>Gender</p>
+    <label class="opt"><input type="radio" name="gender" value="male"> Male</label>
+    <label class="opt"><input type="radio" name="gender" value="female"> Female</label>
+    <label class="opt"><input type="radio" name="gender" value="nonbinary"> Non-binary</label>
+    <label class="opt"><input type="radio" name="gender" value="na"> Prefer not to say</label>
+    <p style="margin-top:18px;">How often do you shop online?</p>
+    <label class="opt"><input type="radio" name="freq" value="rare"> Less than once a month</label>
+    <label class="opt"><input type="radio" name="freq" value="monthly"> 1–3 times a month</label>
+    <label class="opt"><input type="radio" name="freq" value="weekly"> About weekly</label>
+    <label class="opt"><input type="radio" name="freq" value="often"> Several times a week</label>
+    <p style="margin-top:18px;">Highest education completed</p>
+    <label class="opt"><input type="radio" name="edu" value="hs"> High school or less</label>
+    <label class="opt"><input type="radio" name="edu" value="some"> Some college</label>
+    <label class="opt"><input type="radio" name="edu" value="ba"> Bachelor's degree</label>
+    <label class="opt"><input type="radio" name="edu" value="grad"> Graduate degree</label>
+    <div class="err" id="err-demo">Please answer all items.</div>
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goBack()">← Back</button>
+      <button class="btn" id="submitBtn" onclick="submitAll()">Submit</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-done">
+  <div class="card" style="text-align:center;">
+    <h1>Thank you!</h1>
+    <p>Your responses have been recorded. Your Prolific completion code is:</p>
+    <p style="font-size:24px;font-weight:700;letter-spacing:2px;color:#2e7d4f;" id="codeBox">XXXXXXXX</p>
+    <p>Please copy this code into Prolific, or click the button below to return automatically.</p>
+    <div class="btn-row" style="justify-content:center;"><a class="btn" id="returnBtn" href="#">Return to Prolific</a></div>
+  </div>
+</div>
+
+<script>
+
+var CONFIG = {
+  BACKEND_URL: "https://script.google.com/macros/s/AKfycbyM8X0L__bgfJ0UHYAq0Qnu04BvBWp1tBe4RoOzaV093LV1REQpjB7y-P0GHZmFNHpvjA/exec",  // Apps Script web app URL
+  PROLIFIC_COMPLETION_CODE: "XXXXXXXX",                   // your Prolific completion code
+  PROLIFIC_RETURN_URL: "https://app.prolific.com/submissions/complete?cc=XXXXXXXX",
+  MIN_DWELL_MS: 1   // minimum time the sustainability info must be open before continuing
+};
+
+var PREV_SCREEN = {
+  "screen-mediators": "screen-recall",
+  "screen-dv":        "screen-mediators",
+  "screen-controls":  "screen-dv",
+  "screen-mc":      "screen-controls",
+  "screen-demo":      "screen-mc"
+};
+var SCREEN_STATES = {};
+var currentScreen = "screen-consent";
+
+function saveState(screenId) {
+  var s = {}, el = document.getElementById(screenId);
+  el.querySelectorAll('input[type="radio"]:checked').forEach(function (r) {
+    s[r.name] = r.value;
+  });
+  ["age", "wtp"].forEach(function (id) {
+    var f = document.getElementById(id); if (f && f.value) s["#" + id] = f.value;
+  });
+  SCREEN_STATES[screenId] = s;
+}
+
+function restoreState(screenId) {
+  var s = SCREEN_STATES[screenId]; if (!s) return;
+  Object.keys(s).forEach(function (k) {
+    if (k[0] === "#") {
+      var f = document.getElementById(k.slice(1)); if (f) f.value = s[k];
+    } else {
+      var r = document.querySelector(
+        '#' + screenId + ' input[name="' + k + '"][value="' + s[k] + '"]'
+      );
+      if (r) r.checked = true;
+    }
+  });
+}
+
+function goBack() {
+  var prev = PREV_SCREEN[currentScreen]; if (!prev) return;
+  saveState(currentScreen);   // save any partial answers on the current screen
+  show(prev);
+  restoreState(prev);         // re-populate the previous screen's form
+}
+
+var DATA = {
+  prolific_pid: getParam("PROLIFIC_PID"),
+  study_id: getParam("STUDY_ID"),
+  session_id: getParam("SESSION_ID"),
+  condition: (Math.random() < 0.5) ? "auto" : "hover",   // random assignment
+
+  added_to_cart: null,
+  reveal_triggered: false,
+  reveal_dwell_ms: 0,
+  hover_count: 0,
+  time_to_first_hover_ms: null,
+  total_page_time_ms: null,
+  time_to_decision_ms: null,
+
+  start_time: new Date().toISOString()
+};
+
+function getParam(name) {
+  var m = new RegExp("[?&]" + name + "=([^&]*)").exec(window.location.search);
+  return m ? decodeURIComponent(m[1]) : "";
+}
+
+
+var SCALE_ANCHORS = ["Strongly<br>disagree", "", "", "Neutral", "", "", "Strongly<br>agree"];
+
+var MC_ITEMS = [
+  ["mc_1", "I had to actively interact with the page to see the product's sustainability information."],
+  ["mc_2", "The sustainability information appeared automatically without any action from me."],
+  ["mc_3", "I discovered the sustainability information myself."],
+  ["mc_4", "I controlled when the sustainability information appeared."]
+];
+var NAV_ITEMS = [
+  ["nav_1", "I felt in control of how I explored the product information."],
+  ["nav_2", "I decided for myself when and what product information to view."],
+  ["nav_3", "I was in charge of my own browsing experience on this page."],
+  ["nav_4", "The way I obtained the product information was up to me."],
+  ["nav_5", "I controlled the pace at which I discovered information about the product."]
+];
+var OWN_ITEMS = [
+  ["own_1", "I feel like this product is mine."],
+  ["own_2", "I feel a high degree of personal connection to this product."],
+  ["own_3", "It feels like I discovered this product on my own."],
+  ["own_4", "I feel personally invested in this product."]
+];
+var DV_ITEMS = [
+  ["ret_1", "If I purchased this backpack, I would likely return it."],
+  ["ret_2", "After buying this backpack, I would feel confident about keeping it."],
+  ["ret_3", "I would be unlikely to send this product back after receiving it."],
+  ["pi_1",  "I would like to buy this product."],
+  ["pi_2",  "If I were shopping for a backpack, I would consider buying this product."],
+  ["pi_3",  "It is likely that I would purchase this product."],
+  ["cred_1","The sustainability information about this product seemed believable."],
+  ["cred_2","I trust the sustainability claims made about this product."],
+  ["trust_1","This brand seems trustworthy."],
+  ["trust_2","I would trust this brand."]
+];
+var CTRL_ITEMS = [
+  ["sc_1", "I consider environmental impact when making purchase decisions."],
+  ["sc_2", "Buying sustainable products is important to me."],
+  ["sc_3", "I am willing to pay more for environmentally friendly products."],
+  ["inv_1","I am interested in buying a backpack."],
+  ["inv_2","A backpack is personally relevant to me."],
+  ["attn_1","Please select 'Strongly agree' for this item."],   // attention check
+  ["bf_1", "I am familiar with the brand TERRA."]
+];
+
+
+function renderLikert(containerId, items) {
+  var html = "";
+  items.forEach(function (it) {
+    var key = it[0], q = it[1];
+    html += '<div class="likert"><div class="likert-q">' + q + '</div>';
+    html += '<div class="likert-scale">';
+    for (var v = 1; v <= 7; v++) {
+      html += '<label><input type="radio" name="' + key + '" value="' + v + '">' +
+              '<span>' + SCALE_ANCHORS[v-1] + (SCALE_ANCHORS[v-1] ? '' : v) + '</span></label>';
+    }
+    html += '</div></div>';
+  });
+  document.getElementById(containerId).innerHTML = html;
+}
+renderLikert("mcItems", MC_ITEMS);
+renderLikert("navItems", NAV_ITEMS);
+renderLikert("ownItems", OWN_ITEMS);
+renderLikert("dvItems", DV_ITEMS);
+renderLikert("ctrlItems", CTRL_ITEMS);
+
+// Prevent scroll jump when clicking radio labels (the browser scrolls to show focused inputs)
+document.addEventListener('click', function(e) {
+  if (e.target.matches('.likert-scale label, label.opt')) {
+    var input = document.getElementById(e.target.getAttribute('for'));
+    if (input && input.type === 'radio') {
+      e.preventDefault();
+      input.checked = true;
+    }
+  }
+});
+
+
+function show(id) {
+  document.querySelectorAll(".screen").forEach(function (s) { s.classList.remove("active"); });
+  document.getElementById(id).classList.add("active");
+  currentScreen = id;
+  window.scrollTo(0, 0);
+}
+
+function handleConsent() {
+  var c = document.querySelector('input[name="consent"]:checked');
+  if (!c) { document.getElementById("err-consent").style.display = "block"; return; }
+  if (c.value === "no") { document.body.innerHTML = "<div style='max-width:600px;margin:80px auto;text-align:center;font-family:sans-serif;'><h2>Thank you for your time.</h2><p>You have chosen not to participate. You may close this window.</p></div>"; return; }
+  show("screen-instructions");
+}
+
+var pageStartTime = null;
+var revealOpenSince = null;
+var dwellTimer = null;
+
+function startProduct() {
+  show("screen-product");
+  pageStartTime = Date.now();
+  var trigger = document.getElementById("sustainTrigger");
+  var reveal  = document.getElementById("sustainReveal");
+
+  if (DATA.condition === "auto") {
+
+    trigger.classList.add("hidden");
+    setTimeout(function () {
+      reveal.classList.add("open");
+      DATA.reveal_triggered = true;
+      startDwell();
+    }, 2000);
+  } else {
+    var group = document.getElementById("sustainGroup");
+    var trigger = document.getElementById("sustainTrigger");
+    var revealDiv = document.getElementById("sustainReveal");
+
+    trigger.classList.remove("hidden");
+    trigger.querySelector(".hint").style.display = "inline-block";
+
+        // Inside startProduct(), after defining group, trigger, revealDiv
+    var hoverZone = document.getElementById("sustainGroup");
+    var closeTimer = null;
+
+    function cancelClose() {
+      if (closeTimer) {
+        clearTimeout(closeTimer);
+        closeTimer = null;
+      }
+    }
+
+    function scheduleClose() {
+      cancelClose();
+      closeTimer = setTimeout(function() {
+        if (revealDiv.classList.contains("open")) {
+          revealDiv.classList.remove("open");
+          pauseDwell();
+          // Remove button extension listeners if any
+          removeExtensionListeners();
+        }
+      }, 150);  // 800ms delay – plenty of time to move slowly to buttons
+    }
+
+    function addExtensionListeners() {
+      var cartBtn = document.getElementById("cartBtn");
+      var skipBtn = document.getElementById("skipBtn");
+      cartBtn.addEventListener("mouseenter", cancelClose);
+      skipBtn.addEventListener("mouseenter", cancelClose);
+      cartBtn.addEventListener("mouseleave", scheduleClose);
+      skipBtn.addEventListener("mouseleave", scheduleClose);
+      // Store for removal
+      window._extListeners = { cartBtn, skipBtn };
+    }
+
+    function removeExtensionListeners() {
+      if (window._extListeners) {
+        var cart = window._extListeners.cartBtn;
+        var skip = window._extListeners.skipBtn;
+        cart.removeEventListener("mouseenter", cancelClose);
+        skip.removeEventListener("mouseenter", cancelClose);
+        cart.removeEventListener("mouseleave", scheduleClose);
+        skip.removeEventListener("mouseleave", scheduleClose);
+        window._extListeners = null;
+      }
+    }
+    
+
+    function openPanel() {
+      if (!revealDiv.classList.contains("open")) {
+        revealDiv.classList.add("open");
+        addExtensionListeners();   // buttons now keep card open
+        if (!DATA.reveal_triggered) {
+          DATA.reveal_triggered = true;
+          DATA.time_to_first_hover_ms = Date.now() - pageStartTime;
+        }
+        DATA.hover_count += 1;
+        startDwell();
+      }
+      cancelClose();
+    }
+
+    function closePanel() {
+      // Don't close immediately – use timer
+      scheduleClose();
+    }
+
+    // Set up hover events on the main zone (trigger + card area)
+    hoverZone.addEventListener("mouseenter", openPanel);
+    hoverZone.addEventListener("mouseleave", closePanel);
+
+// Also ensure that mouseleave from the hoverZone itself schedules close
+    }
+  }
+
+function startDwell() {
+  if (revealOpenSince === null) revealOpenSince = Date.now();
+  if (dwellTimer) return;
+  dwellTimer = setInterval(function () {
+    var elapsed = DATA.reveal_dwell_ms + (Date.now() - revealOpenSince);
+    if (elapsed >= CONFIG.MIN_DWELL_MS) {
+      enableDecision();
+    }
+  }, 300);
+}
+function pauseDwell() {
+  if (revealOpenSince !== null) {
+    DATA.reveal_dwell_ms += (Date.now() - revealOpenSince);
+    revealOpenSince = null;
+  }
+}
+function enableDecision() {
+  document.getElementById("cartBtn").disabled = false;
+  document.getElementById("skipBtn").disabled = false;
+  document.getElementById("dwellNote").style.display = "none";
+}
+
+function decide(added) {
+  pauseDwell();
+  DATA.added_to_cart = added;
+  DATA.total_page_time_ms = Date.now() - pageStartTime;
+  DATA.time_to_decision_ms = Date.now() - pageStartTime;
+  show("screen-recall");
+}
+
+
+function collectRadios(items) {
+  var out = {}, ok = true;
+  items.forEach(function (it) {
+    var sel = document.querySelector('input[name="' + it[0] + '"]:checked');
+    if (sel) out[it[0]] = parseInt(sel.value); else ok = false;
+  });
+  return { ok: ok, data: out };
+}
+
+function next(screen) {
+  if (screen === "recall") {
+    saveState("screen-recall");
+    var rec = document.querySelector('input[name="recall"]:checked');
+    if (!rec) { document.getElementById("err-recall").style.display = "block"; return; }
+    DATA.recall_answer = rec.value;
+    show("screen-mediators");
+  }
+  else if (screen === "mediators") {
+    saveState("screen-mediators");
+    var n = collectRadios(NAV_ITEMS), o = collectRadios(OWN_ITEMS);
+    if (!n.ok || !o.ok) { document.getElementById("err-mediators").style.display = "block"; return; }
+    Object.assign(DATA, n.data, o.data);
+    show("screen-dv");
+  }
+  else if (screen === "dv") {
+    saveState("screen-dv");
+    var d = collectRadios(DV_ITEMS);
+    var wtp = document.getElementById("wtp").value;
+    if (!d.ok || wtp === "") { document.getElementById("err-dv").style.display = "block"; return; }
+    Object.assign(DATA, d.data);
+    DATA.wtp = parseFloat(wtp);
+    show("screen-controls");
+  }
+  else if (screen === "controls") {
+    saveState("screen-controls");
+    var c = collectRadios(CTRL_ITEMS);
+    if (!c.ok) { document.getElementById("err-controls").style.display = "block"; return; }
+    Object.assign(DATA, c.data);
+    show("screen-mc");
+  }else if (screen === "mc") {
+    saveState("screen-mc");
+    var r = collectRadios(MC_ITEMS);
+    if (!r.ok) { document.getElementById("err-mc").style.display = "block"; return; }
+    Object.assign(DATA, r.data);
+    show("screen-demo");
+  }
+}
+
+
+function submitAll() {
+  var age = document.getElementById("age").value;
+  var gender = document.querySelector('input[name="gender"]:checked');
+  var freq = document.querySelector('input[name="freq"]:checked');
+  var edu = document.querySelector('input[name="edu"]:checked');
+  if (!age || !gender || !freq || !edu) { document.getElementById("err-demo").style.display = "block"; return; }
+  DATA.age = parseInt(age);
+  DATA.gender = gender.value;
+  DATA.shopping_freq = freq.value;
+  DATA.education = edu.value;
+  DATA.end_time = new Date().toISOString();
+
+  document.getElementById("submitBtn").disabled = true;
+  document.getElementById("submitBtn").textContent = "Submitting…";
+
+
+  fetch(CONFIG.BACKEND_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(DATA)
+  }).then(finish).catch(finish);
+
+
+  setTimeout(finish, 3000);
+}
+
+var finished = false;
+function finish() {
+  if (finished) return;
+  finished = true;
+  document.getElementById("codeBox").textContent = CONFIG.PROLIFIC_COMPLETION_CODE;
+  document.getElementById("returnBtn").href = CONFIG.PROLIFIC_RETURN_URL;
+  show("screen-done");
+}
+
+function selectColorByIndex(idx) {
+  var wrappers = document.querySelectorAll('.thumb-wrapper');
+  if (wrappers[idx]) {
+    changeMainImage(wrappers[idx]);
+  }
+}
+function changeMainImage(wrapper) {
+  var img = wrapper.querySelector('img');
+  var mainImg = document.getElementById("ppMainImg");
+  mainImg.src = img.src;
+  
+  // Update active class
+  var wrappers = document.querySelectorAll('.thumb-wrapper');
+  wrappers.forEach(function(w) {
+    w.classList.remove('active');
+  });
+  wrapper.classList.add('active');
+  
+  // Update color dots (optional)
+  var idx = Array.from(wrappers).indexOf(wrapper);
+  var dots = document.querySelectorAll('.pp-dot');
+  dots.forEach(function(d, i) {
+    d.style.borderColor = (i === idx) ? '#1a1a1a' : '#ddd';
+  });
+}
+</script>
+</body>
+</html>
