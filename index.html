@@ -249,23 +249,8 @@
   </div>
 </div>
 
-<div class="screen" id="screen-mediators">
-  <div class="progress"><div class="progress-bar" style="width:30%"></div></div>
-  <div class="card">
-    <h2>Your experience on the page</h2>
-    <p>Please indicate how much you agree with each statement.</p>
-    <div id="navItems"></div>
-    <div id="ownItems"></div>
-    <div class="err" id="err-mediators">Please answer all items.</div>
-    <div class="btn-row">
-      <button class="btn btn-back" onclick="goBack()">← Back</button>
-      <button class="btn" onclick="next('mediators')">Continue</button>
-    </div>
-  </div>
-</div>
-
 <div class="screen" id="screen-dv">
-  <div class="progress"><div class="progress-bar" style="width:45%"></div></div>
+  <div class="progress"><div class="progress-bar" style="width:30%"></div></div>
   <div class="card">
     <h2>Your views about the product</h2>
     <div id="dvItems"></div>
@@ -276,6 +261,21 @@
     <div class="btn-row">
       <button class="btn btn-back" onclick="goBack()">← Back</button>
       <button class="btn" onclick="next('dv')">Continue</button>
+    </div>
+  </div>
+</div>
+
+ <div class="screen" id="screen-mediators">
+  <div class="progress"><div class="progress-bar" style="width:45%"></div></div>
+  <div class="card">
+    <h2>Your experience on the page</h2>
+    <p>Please indicate how much you agree with each statement.</p>
+    <div id="navItems"></div>
+    <div id="ownItems"></div>
+    <div class="err" id="err-mediators">Please answer all items.</div>
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goBack()">← Back</button>
+      <button class="btn" onclick="next('mediators')">Continue</button>
     </div>
   </div>
 </div>
@@ -352,9 +352,9 @@ var CONFIG = {
 };
 
 var PREV_SCREEN = {
-  "screen-mediators": "screen-recall",
-  "screen-dv":        "screen-mediators",
-  "screen-controls":  "screen-dv",
+  "screen-mediators": "screen-dv",
+  "screen-dv":        "screen-recall",
+  "screen-controls":  "screen-mediators",
   "screen-mc":      "screen-controls",
   "screen-demo":      "screen-mc"
 };
