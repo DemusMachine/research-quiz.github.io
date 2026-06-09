@@ -299,6 +299,7 @@
     <h2>About the page you just viewed</h2>
     <div id="mcItems"></div>
     <div class="err" id="err-mc">Please answer all items.</div>
+    <button class="btn btn-back" onclick="goBack()">← Back</button>
     <button class="btn" onclick="next('mc')">Continue</button>    
   </div>
 </div>
@@ -646,10 +647,6 @@ function collectRadios(items) {
   return { ok: ok, data: out };
 }
 
-  "screen-mediators": "screen-dv",
-  "screen-controls":  "screen-mediators",
-  "screen-mc":      "screen-controls",
-  "screen-demo":      "screen-mc"
 function next(screen) {
   if (screen === "recall") {
     saveState("screen-recall");
