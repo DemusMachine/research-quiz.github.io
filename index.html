@@ -646,20 +646,24 @@ function collectRadios(items) {
   return { ok: ok, data: out };
 }
 
+  "screen-mediators": "screen-dv",
+  "screen-controls":  "screen-mediators",
+  "screen-mc":      "screen-controls",
+  "screen-demo":      "screen-mc"
 function next(screen) {
   if (screen === "recall") {
     saveState("screen-recall");
     var rec = document.querySelector('input[name="recall"]:checked');
     if (!rec) { document.getElementById("err-recall").style.display = "block"; return; }
     DATA.recall_answer = rec.value;
-    show("screen-mediators");
+    show("screen-dv");
   }
   else if (screen === "mediators") {
     saveState("screen-mediators");
     var n = collectRadios(NAV_ITEMS), o = collectRadios(OWN_ITEMS);
     if (!n.ok || !o.ok) { document.getElementById("err-mediators").style.display = "block"; return; }
     Object.assign(DATA, n.data, o.data);
-    show("screen-dv");
+    show("screen-controls");
   }
   else if (screen === "dv") {
     saveState("screen-dv");
@@ -668,7 +672,7 @@ function next(screen) {
     if (!d.ok || wtp === "") { document.getElementById("err-dv").style.display = "block"; return; }
     Object.assign(DATA, d.data);
     DATA.wtp = parseFloat(wtp);
-    show("screen-controls");
+    show("screen-mediators");
   }
   else if (screen === "controls") {
     saveState("screen-controls");
