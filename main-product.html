@@ -158,6 +158,40 @@
     group.addEventListener('mouseenter', () => reveal.classList.add('open'));
     group.addEventListener('mouseleave', () => reveal.classList.remove('open'));
   }
+  // Function to send the current document height to the parent
+function sendHeightToParent() {
+  var height = document.documentElement.scrollHeight; // full content height
+  if (window.parent !== window) {
+    window.parent.postMessage({ type: 'setHeight', height: height }, '*');
+  }
+}
+
+// Send height on load
+window.addEventListener('load', function() {
+  sendHeightToParent();
+});
+
+// Observe the sustainability card opening/closing (height changes)
+var sustainGroup = document.getElementById('sustainGroup');
+var observer = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (mutation.attributeName === 'class') {
+      sendHeightToParent();
+    }
+  });
+});
+observer.observe(document.getElementById('sustainReveal'), { attributes: true });
+
+// Also send height whenever any image loads (they can affect layout)
+document.querySelectorAll('img').forEach(function(img) {
+  img.addEventListener('load', sendHeightToParent);
+});
+
+// Optional: resize observer for more robust detection
+if (window.ResizeObserver) {
+  var resizeObserver = new ResizeObserver(sendHeightToParent);
+  resizeObserver.observe(document.body);
+}
 </script>
 </body>
 </html>
