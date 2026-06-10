@@ -130,60 +130,7 @@
   padding: 4px 13px; white-space: nowrap;
   letter-spacing: 0.2px;
 }
- .product-summary {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px 20px 20px 20px;
-  margin-bottom: 25px;
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  box-shadow: 0 1px 8px rgba(0,0,0,0.05);
-}
-.summary-image {
-  flex: 0 0 120px;
-}
-.summary-image img {
-  width: 100%;
-  border-radius: 8px;
-  object-fit: contain;
-  background: #f5f5f3;
-}
-.summary-info {
-  flex: 1;
-}
-.summary-name {
-  font-size: 18px;
-  font-weight: 600;
-}
-.summary-price {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 6px 0;
-}
-.summary-desc {
-  font-size: 13px;
-  color: #555;
-  margin-bottom: 10px;
-}
-.summary-sustain {
-  background: #f0f7f1;
-  border-radius: 8px;
-  padding: 12px;
-  margin-top: 30px;
-}
-.summary-sustain .sustain-text {
-  font-size: 13px;
-  margin-bottom: 8px;
-}
-.summary-sustain .sustain-stat {
-  gap: 12px;
-  margin: 8px 0;
-}
-.summary-sustain .cert {
-  font-size: 10px;
-  padding: 3px 8px;
-}
+
 @keyframes sustain-pulse {
   0%   { box-shadow: 0 0 0 0   rgba(46,125,79,0.45); }
   55%  { box-shadow: 0 0 0 11px rgba(46,125,79,0);   }
@@ -308,10 +255,7 @@
   <div class="card">
     <h2>Your views about the product</h2>
     <div id="dvItems"></div>
-    <h2>What is the most you would pay for this product?</h2>
-    <p>Please enter a value in US dollars.</p>
-    <input class="text-input" id="wtp" type="number" min="0" placeholder="$ amount">
-    <div class="err" id="err-dv">Please answer all items, including the price.</div>
+    <div class="err" id="err-dv">Please answer all items.</div>
     <div class="btn-row">
       <button class="btn btn-back" onclick="goBack()">← Back</button>
       <button class="btn" onclick="next('dv')">Continue</button>
@@ -321,6 +265,13 @@
 
  <div class="screen" id="screen-mediators">
   <div class="progress"><div class="progress-bar" style="width:45%"></div></div>
+  <div style="position: relative; left: 50%; transform: translateX(-50%); width: 1100px; margin: 0 0 18px 0;">
+          <iframe id="mediatorsEmbed" 
+        style="margin: 0 auto; max-width: 1000px; width:100%; height:900px; border:1px solid #eee; border-radius:8px; margin-bottom:18px; overflow: auto; display: block;"
+        scrolling="yes" 
+        frameborder="0" 
+        src="about:blank"></iframe>
+  </div>
   <div class="card">
     <h2>Your experience on the page</h2>
     <p>Please indicate how much you agree with each statement.</p>
@@ -349,29 +300,13 @@
 
 <div class="screen" id="screen-mc">
   <div class="progress"><div class="progress-bar" style="width:75%"></div></div>
- <div class="product-summary">
-  <div class="summary-image">
-    <img id="summaryMainImg" src="images/1.jpg" alt="Daily Pack">
+  <div style="position: relative; left: 50%; transform: translateX(-50%); width: 1100px; margin: 0 0 18px 0;">
+      <iframe id="mcEmbed" 
+        style="margin: 0 auto; max-width: 1000px; width:100%; height:900px; border:1px solid #eee; border-radius:8px; margin-bottom:18px; overflow: auto; display: block;"
+        scrolling="yes" 
+        frameborder="0" 
+        src="about:blank"></iframe>
   </div>
-  <div class="summary-info">
-    <div class="summary-name">Daily Pack</div>
-    <div class="summary-price">$120</div>
-    <div class="summary-desc">20L everyday backpack · commute, work & travel</div>
-    <div class="summary-sustain">
-      <div class="sustain-text">The main body is woven from 100% recycled ocean-bound plastic, and the lining uses recycled PET. Every pack is backed by our lifetime repair program — we fix it free instead of you replacing it.</div>
-      <div class="sustain-stat">
-        <div><div class="stat-num">18</div><div class="stat-label">Bottles recycled<br>per pack</div></div>
-        <div><div class="stat-num">100%</div><div class="stat-label">Carbon-neutral<br>shipping</div></div>
-        <div><div class="stat-num">Free</div><div class="stat-label">Lifetime<br>repairs</div></div>
-      </div>
-      <div class="cert-row">
-        <span class="cert">✓ bluesign® certified</span>
-        <span class="cert">✓ Global Recycled Standard</span>
-        <span class="cert">✓ Climate Neutral</span>
-      </div>
-    </div>
-  </div>
-</div>
   <div class="card">
     <h2>About the page you just viewed</h2>
     <div id="mcItems"></div>
@@ -393,15 +328,6 @@
     <label class="opt"><input type="radio" name="gender" value="nonbinary"> Non-binary</label>
     <label class="opt"><input type="radio" name="gender" value="na"> Prefer not to say</label>
     <p style="margin-top:18px;">How often do you shop online?</p>
-    <label class="opt"><input type="radio" name="freq" value="rare"> Less than once a month</label>
-    <label class="opt"><input type="radio" name="freq" value="monthly"> 1–3 times a month</label>
-    <label class="opt"><input type="radio" name="freq" value="weekly"> About weekly</label>
-    <label class="opt"><input type="radio" name="freq" value="often"> Several times a week</label>
-    <p style="margin-top:18px;">Highest education completed</p>
-    <label class="opt"><input type="radio" name="edu" value="hs"> High school or less</label>
-    <label class="opt"><input type="radio" name="edu" value="some"> Some college</label>
-    <label class="opt"><input type="radio" name="edu" value="ba"> Bachelor's degree</label>
-    <label class="opt"><input type="radio" name="edu" value="grad"> Graduate degree</label>
     <div class="err" id="err-demo">Please answer all items.</div>
     <div class="btn-row">
       <button class="btn btn-back" onclick="goBack()">← Back</button>
@@ -444,7 +370,7 @@ function saveState(screenId) {
   el.querySelectorAll('input[type="radio"]:checked').forEach(function (r) {
     s[r.name] = r.value;
   });
-  ["age", "wtp"].forEach(function (id) {
+  ["age"].forEach(function (id) {
     var f = document.getElementById(id); if (f && f.value) s["#" + id] = f.value;
   });
   SCREEN_STATES[screenId] = s;
@@ -498,39 +424,27 @@ var SCALE_ANCHORS = ["Strongly<br>disagree", "", "", "Neutral", "", "", "Strongl
 
 var MC_ITEMS = [
   ["mc_1", "I had to actively interact with the page to see the product's sustainability information."],
-  ["mc_2", "The sustainability information appeared automatically without any action from me."],
-  ["mc_3", "I discovered the sustainability information myself."],
-  ["mc_4", "I controlled when the sustainability information appeared."]
+  ["mc_2", "I discovered the sustainability information myself."],
 ];
 var NAV_ITEMS = [
-  ["nav_1", "I felt in control of how I explored the product information."],
-  ["nav_2", "I decided for myself when and what product information to view."],
-  ["nav_3", "I was in charge of my own browsing experience on this page."],
-  ["nav_4", "The way I obtained the product information was up to me."],
-  ["nav_5", "I controlled the pace at which I discovered information about the product."]
+  ["nav_1", "I felt like I was actively exploring the product on my own."],
+  ["nav_2", "Browsing this page felt like a process of discovery."],
+  ["nav_3", "I felt in control of how I explored the product information."]
 ];
 var OWN_ITEMS = [
-  ["own_1", "I feel like this product is mine."],
-  ["own_2", "I feel a high degree of personal connection to this product."],
-  ["own_3", "It feels like I discovered this product on my own."],
-  ["own_4", "I feel personally invested in this product."]
+  ["own_1", "It was up to me to decide when and what information to view."],
+  ["own_2", "The product information was easy to process."],
+  ["own_3", "Understanding the product did not require much mental effort."]
 ];
 var DV_ITEMS = [
-  ["ret_1", "After buying this backpack, I would feel confident about keeping it."],
-  ["pi_1",  "If I were shopping for a backpack, I would consider buying this product."],
-  ["cred_1","The sustainability information about this product seemed believable."],
-  ["cred_2","I trust the sustainability claims made about this product."],
-  ["trust_1","This brand seems trustworthy."],
-  ["trust_2","I would trust this brand."]
+  ["dv_1", "After buying this backpack, I would feel confident about keeping it."],
+  ["dv_2",  "If I were shopping for a backpack, I would consider buying this product."],
+  ["dv_3","The sustainability information about this product seemed believable."]
 ];
 var CTRL_ITEMS = [
   ["sc_1", "I consider environmental impact when making purchase decisions."],
   ["sc_2", "Buying sustainable products is important to me."],
   ["sc_3", "I am willing to pay more for environmentally friendly products."],
-  ["inv_1","I am interested in buying a backpack."],
-  ["inv_2","A backpack is personally relevant to me."],
-  ["attn_1","Please select 'Strongly agree' for this item."],   // attention check
-  ["bf_1", "I am familiar with the brand TERRA."]
 ];
 
 
@@ -739,10 +653,8 @@ function next(screen) {
   else if (screen === "dv") {
     saveState("screen-dv");
     var d = collectRadios(DV_ITEMS);
-    var wtp = document.getElementById("wtp").value;
-    if (!d.ok || wtp === "") { document.getElementById("err-dv").style.display = "block"; return; }
+    if (!d.ok) { document.getElementById("err-dv").style.display = "block"; return; }
     Object.assign(DATA, d.data);
-    DATA.wtp = parseFloat(wtp);
     show("screen-mediators");
   }
   else if (screen === "controls") {
@@ -764,13 +676,9 @@ function next(screen) {
 function submitAll() {
   var age = document.getElementById("age").value;
   var gender = document.querySelector('input[name="gender"]:checked');
-  var freq = document.querySelector('input[name="freq"]:checked');
-  var edu = document.querySelector('input[name="edu"]:checked');
-  if (!age || !gender || !freq || !edu) { document.getElementById("err-demo").style.display = "block"; return; }
+  if (!age || !gender) { document.getElementById("err-demo").style.display = "block"; return; }
   DATA.age = parseInt(age);
   DATA.gender = gender.value;
-  DATA.shopping_freq = freq.value;
-  DATA.education = edu.value;
   DATA.end_time = new Date().toISOString();
 
   document.getElementById("submitBtn").disabled = true;
@@ -830,6 +738,17 @@ function updateSummaryImage() {
     summaryImg.src = mainImg.src;
   }
 }
+function updateEmbeddedProductView() {
+  var condition = DATA.condition; // "auto" or "hover"
+  var embedUrl = 'main-product.html?condition=' + condition;
+  var mediatorsFrame = document.getElementById('mediatorsEmbed');
+  var mcFrame = document.getElementById('mcEmbed');
+  if (mediatorsFrame) mediatorsFrame.src = embedUrl;
+  if (mcFrame) mcFrame.src = embedUrl;
+}
+window.addEventListener('DOMContentLoaded', function() {
+  updateEmbeddedProductView();
+});
 </script>
 </body>
 </html>
