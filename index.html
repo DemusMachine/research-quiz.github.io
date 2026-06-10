@@ -548,11 +548,11 @@ function renderLikert(containerId, items) {
   });
   document.getElementById(containerId).innerHTML = html;
 }
-renderLikert("mcItems", MC_ITEMS);
+renderLikert("dvItems", DV_ITEMS);
 renderLikert("navItems", NAV_ITEMS);
 renderLikert("ownItems", OWN_ITEMS);
-renderLikert("dvItems", DV_ITEMS);
 renderLikert("ctrlItems", CTRL_ITEMS);
+renderLikert("mcItems", MC_ITEMS);
 
 // Prevent scroll jump when clicking radio labels (the browser scrolls to show focused inputs)
 document.addEventListener('click', function(e) {
